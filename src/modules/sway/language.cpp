@@ -219,14 +219,21 @@ Language::XKBContext::~XKBContext() {
   delete layout_;
 }
 
-std::string Language::Layout::country_flag() const {
-  if (short_name.size() != 2) return "";
-  unsigned char result[] = "\xf0\x9f\x87\x00\xf0\x9f\x87\x00";
-  result[3] = short_name[0] + 0x45;
-  result[7] = short_name[1] + 0x45;
-  // Check if both emojis are in A-Z symbol bounds
-  if (result[3] < 0xa6 || result[3] > 0xbf) return "";
-  if (result[7] < 0xa6 || result[7] > 0xbf) return "";
-  return std::string{reinterpret_cast<char*>(result)};
-}
+  std::string Language::Layout::country_flag() const {
+    // I want to see a german flag when I'm in US-intl, cuz that's how I roll.
+    auto myflag = short_name;
+    if (variant == "intl") {
+      myflag = "de";
+    } else {
+      myflag = "us";
+    }
+    if (myflag.size() != 2) return "";
+    unsigned char result[] = "\xf0\x9f\x87\x00\xf0\x9f\x87\x00";
+    result[3] = myflag[0] + 0x45;
+    result[7] = myflag[1] + 0x45;
+    // Check if both emojis are in A-Z symbol bounds
+    if (result[3] < 0xa6 || result[3] > 0xbf) return "";
+    if (result[7] < 0xa6 || result[7] > 0xbf) return "";
+    return std::string{reinterpret_cast<char*>(result)};
+  }
 }  // namespace waybar::modules::sway
