@@ -223,6 +223,8 @@ Language::XKBContext::~XKBContext() {
     // I want to see a german flag when I'm in US-intl, cuz that's how I roll.
     auto myflag = short_name;
     if (variant == "intl") {
+      myflag = "un";
+    } else if (variant == "altgr-intl") {
       myflag = "de";
     } else {
       myflag = "us";
